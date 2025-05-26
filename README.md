@@ -6,8 +6,9 @@
 * CUDA 11.4 and CUDNN 
 * Packages: 
   
+  torch            ==          1.10.0+cu113
+  timm             ==          0.6.7
   basicsr          ==          1.4.2
-  easydict         ==          1.11.dev0
   imageio          ==          2.13.3
   keras            ==          2.11.0
   numpy            ==          1.21.5
@@ -17,8 +18,7 @@
   scipy            ==          1.7.3
   tensorflow-gpu   ==          2.7.0
   tifffile         ==          2021.11.2
-  torch            ==          1.10.0+cu113      1.12.0+cu113
-  
+
 
 ### Prediction
 The proposed HallAssess can assess the hallucination in AI-reconstructed fluorescence microscopy images without a high-quality (HQ) image as the reference.
@@ -30,7 +30,7 @@ Download the pretrained models from `//`. Place the file in the model file.
 cd <directory of the .py file>
 python main.py
 ```
-Replacing "FMIRdatapath" with the folder name containing AI-reconstructed images (such as super-resolved images, denoised images), which need to be measured. 
+Replacing "FMIRdatapath" with the folder name containing AI-reconstructed images, such as super-resolved/denoised images, which need to be measured. 
 
 Replacing "LQpath" with the folder name containing low-quality images (such as low-resolution images, noisy images), which are the input of the fluorescence microscopy image restoration models (such as super-resolution models, denoising models) for generating AI-reconstructed images. 
 
