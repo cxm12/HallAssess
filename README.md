@@ -32,14 +32,16 @@ python main.py
 ```
 Replacing "FMIRdatapath" with the folder name containing AI-reconstructed images (such as super-resolved images, denoised images), which need to be measured. 
 
-Replacing "LQpath" with the folder name containing low-quality images (such as low-resolution images), which are the input of the AI models (such as super-resolution models) for generating AI-reconstructed images. 
+Replacing "LQpath" with the folder name containing low-quality images (such as low-resolution images, noisy images), which are the input of the fluorescence microscopy image restoration models (such as super-resolution models, denoising models) for generating AI-reconstructed images. 
 
 ### Data
 All training and test data involved in the experiments are publicly available datasets. 
 
-* The 3D denoising/isotropic reconstruction/projection datasets can be downloaded from `https://publications.mpi-cbg.de/publications-sites/7207/`
+* The 3D denoising datasets can be downloaded from `https://publications.mpi-cbg.de/publications-sites/7207/`
 
 * The SR dataset can be downloaded from `https://doi.org/10.6084/m9.figshare.13264793`
+  
+* The example images in the paper are ???
 
 ### Model
-The pretrained models can be downloaded from `https://pan.baidu.com/s/1_NBMYfPrMylp71DPJFtcJg?pwd=ohe5`
+The pretrained imaging models in our HallAssess can be downloaded from ``
