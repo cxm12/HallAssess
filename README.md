@@ -1,5 +1,5 @@
 # HallAssess
-# Assessing AI-Reconstructed Hallucinations in Fluorescence Microscopy Image
+"Assessing AI-Reconstructed Hallucinations in Fluorescence Microscopy Image"
 
 ### Requirements
 * Python 3.7
@@ -17,11 +17,12 @@
   scipy            ==          1.7.3
   tensorflow-gpu   ==          2.7.0
   tifffile         ==          2021.11.2
-  torch            ==          1.10.0+cu113
+  torch            ==          1.10.0+cu113      1.12.0+cu113
   
 
 ### Prediction
-The proposed HallAssess uses the well-trained models (UniFMIR [1]) and does not need additional training.
+The proposed HallAssess can assess the hallucination in AI-reconstructed fluorescence microscopy images without a high-quality (HQ) image as the reference.
+uses the well-trained models (UniFMIR [1]) and does not need additional training.
 
 Evaluating the quality of super-resolution results
 Download the pretrained models from `//`. Place the file in the model file. 
@@ -37,16 +38,13 @@ Replacing "LQpath" with the folder name containing low-quality images (such as l
 ### Data
 * The example images in the paper can be found in the `./example_data/` file.
   
-The training and test data involved in the experiments are obtained through the data generation method, which is introduced in the paper. The AI-reconstructed images can be obtained by applying an AI-based fluorescence microscopy image restoration methods on the original 
-All ata are 
+The training and test data involved in the experiments are obtained through the data generation method, which is introduced in the paper. The AI-reconstructed images can be obtained by applying an AI-based fluorescence microscopy image restoration method on the original low-quality (LQ) image.
 
 The imaging model is trained on publicly available datasets by taking the HR/clean images as input and the LR/noisy images as input: 
 
 * The 3D denoising datasets can be downloaded from `https://publications.mpi-cbg.de/publications-sites/7207/`
 
 * The SR dataset can be downloaded from `https://doi.org/10.6084/m9.figshare.13264793`
-  
-
 
 ### Model
 The pretrained imaging models in our HallAssess can be downloaded from ``
