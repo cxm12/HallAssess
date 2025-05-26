@@ -16,7 +16,6 @@
   Pillow           ==          9.0.1
   scikit-image     ==          0.19.2
   scipy            ==          1.7.3
-  tensorflow-gpu   ==          2.7.0
   tifffile         ==          2021.11.2
 
 
@@ -27,18 +26,19 @@ The proposed HallAssess can assess the hallucination in AI-reconstructed fluores
 cd <directory of the .py file>
 python main.py
 ```
+Evaluating the hallucinations of super-resolution results from the `CCPs` test set:
+
+setting task = 1 and testset = 'CCPs'
+
 Replacing "FMIRdatapath" with the folder name containing AI-reconstructed images, such as super-resolved/denoised images, which need to be measured. 
 
 Replacing "LQpath" with the folder name containing low-quality images (such as low-resolution images, noisy images), which are the input of the fluorescence microscopy image restoration models (such as super-resolution models, denoising models) for generating AI-reconstructed images. 
 
-Evaluating the hallucinations of super-resolution results from the `CCPs` test set:
-task = 1; 
-testset = 'CCPs'
 
 ### Data
 * The example images in the paper can be found in the `./example_data/` file.
   
-The training and test data involved in the experiments are obtained through the data generation method, which is introduced in the paper. The AI-reconstructed images can be obtained by applying an AI-based fluorescence microscopy image restoration method on the original low-quality (LQ) image.
+The training and test data involved in the experiments are obtained through the data generation method introduced in the paper. The AI-reconstructed images can be obtained by applying an AI-based fluorescence microscopy image restoration method on the original low-quality (LQ) image. 
 
 The imaging model is trained on publicly available datasets by taking the HR/clean images as input and the LR/noisy images as input: 
 
