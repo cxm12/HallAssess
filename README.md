@@ -22,7 +22,6 @@
 
 ### Prediction
 The proposed HallAssess can assess the hallucination in AI-reconstructed fluorescence microscopy images without a high-quality (HQ) image as the reference.
-uses the well-trained models (UniFMIR [1]) and does not need additional training.
 
 Evaluating the quality of super-resolution results
 Download the pretrained models from `//`. Place the file in the model file. 
@@ -47,4 +46,4 @@ The imaging model is trained on publicly available datasets by taking the HR/cle
 * The SR dataset can be downloaded from `https://doi.org/10.6084/m9.figshare.13264793`
 
 ### Model
-The pretrained imaging models in our HallAssess can be downloaded from ``
+The pretrained imaging models in our HallAssess are put into `./experiment/`
