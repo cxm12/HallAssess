@@ -21,10 +21,7 @@
 
 
 ### Prediction
-The proposed HallAssess can assess the hallucination in AI-reconstructed fluorescence microscopy images without a high-quality (HQ) image as the reference.
-
-Evaluating the quality of super-resolution results
-Download the pretrained models from `//`. Place the file in the model file. 
+The proposed HallAssess can assess the hallucination in AI-reconstructed fluorescence microscopy images without requiring a high-quality (HQ) image as the reference.
 
 ```
 cd <directory of the .py file>
@@ -33,6 +30,10 @@ python main.py
 Replacing "FMIRdatapath" with the folder name containing AI-reconstructed images, such as super-resolved/denoised images, which need to be measured. 
 
 Replacing "LQpath" with the folder name containing low-quality images (such as low-resolution images, noisy images), which are the input of the fluorescence microscopy image restoration models (such as super-resolution models, denoising models) for generating AI-reconstructed images. 
+
+Evaluating the hallucinations of super-resolution results from the `CCPs` test set:
+task = 1; 
+testset = 'CCPs'
 
 ### Data
 * The example images in the paper can be found in the `./example_data/` file.
