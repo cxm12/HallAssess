@@ -35,13 +35,18 @@ Replacing "FMIRdatapath" with the folder name containing AI-reconstructed images
 Replacing "LQpath" with the folder name containing low-quality images (such as low-resolution images, noisy images), which are the input of the fluorescence microscopy image restoration models (such as super-resolution models, denoising models) for generating AI-reconstructed images. 
 
 ### Data
-All training and test data involved in the experiments are publicly available datasets. 
+* The example images in the paper can be found in the `./example_data/` file.
+  
+The training and test data involved in the experiments are obtained through the data generation method, which is introduced in the paper. The AI-reconstructed images can be obtained by applying an AI-based fluorescence microscopy image restoration methods on the original 
+All ata are 
+
+The imaging model is trained on publicly available datasets by taking the HR/clean images as input and the LR/noisy images as input: 
 
 * The 3D denoising datasets can be downloaded from `https://publications.mpi-cbg.de/publications-sites/7207/`
 
 * The SR dataset can be downloaded from `https://doi.org/10.6084/m9.figshare.13264793`
   
-* The example images in the paper are ???
+
 
 ### Model
 The pretrained imaging models in our HallAssess can be downloaded from ``
