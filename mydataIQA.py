@@ -54,7 +54,10 @@ class Deg_SR(data.Dataset):
         self.rgb_range = 1
 
     def __getitem__(self, idx):
-        lr = tiff.imread(self.dir_demoLR)
+        if '.png' in self.dir_demoLR:
+            lr = cv2.cvtColor(np.squeeze(cv2.imread(self.dir_demoLR)), cv2.COLOR_BGR2GRAY)
+        else:
+            lr = tiff.imread(self.dir_demoLR)
         if '.png' in self.dir_demo:
             sr = cv2.cvtColor(np.squeeze(cv2.imread(self.dir_demo)), cv2.COLOR_BGR2GRAY)
         else:
