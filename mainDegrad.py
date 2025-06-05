@@ -12,7 +12,7 @@ import cv2
 import numpy as np
 from tifffile import imsave
 from sklearn.metrics import mean_absolute_error
-rp = '/mnt/home/user1/MCX/Medical/CSBDeep-master/examples/BioSR/ENLCA/Uni-FMIR/HallAssess/' # os.path.dirname(__file__)
+rp = os.path.dirname(__file__)
 print('rp = ', rp)
 
 
