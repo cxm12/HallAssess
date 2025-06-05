@@ -43,7 +43,6 @@ The training and test data involved in the experiments are obtained through the 
 The imaging model is trained on publicly available datasets by taking the HR/clean images as input and the LR/noisy images as input: 
 
 * The 3D denoising datasets can be downloaded from `https://publications.mpi-cbg.de/publications-sites/7207/`.
-* The example data in the paper can be downloaded from `https://pan.baidu.com/s/1uaksFu-rbk4FYFXbSHfZ4g?pwd=1169'.
 
 * The SR dataset can be downloaded from `https://doi.org/10.6084/m9.figshare.13264793`
 
