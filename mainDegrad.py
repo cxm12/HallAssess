@@ -105,7 +105,7 @@ class Trainer():
             print(HallAssess)
     
     def test3Ddenoise(self, condition=1, data_test=''):
-        self.testsave = self.dir + '/results/condition_%d/' % condition
+        self.testsave = self.dir + '/results/'
         os.makedirs(self.testsave, exist_ok=True)
         datamin, datamax = self.args.datamin, self.args.datamax
         patchsize = 600
@@ -193,6 +193,36 @@ class Trainer():
             resultlst.append(np.mean(np.array(cresultlst)))
         result = np.mean(np.array(resultlst))
         print(result)
+    
+    def test2Ddenoise(self):
+        self.testsave = self.dir + '/results/'
+        os.makedirs(self.testsave, exist_ok=True)
+        torch.set_grad_enabled(False)
+        self.model.eval()
+        resultlst = []
+        for idx_data, (lrt, hrt, filename) in enumerate(self.loader_test[0]):
+            print('filename = ', filename)
+            name = '{}'.format(filename[0])
+            
+            lrt = self.normalizer.before(lrt, 'ZCYX')
+            hrt = self.normalizerhr.before(hrt, 'ZCYX')
+            lrt, hrt = self.prepare(lrt, hrt)
+            lr = np.squeeze(lrt.cpu().detach().numpy())
+            print('hrt.shape = ', hrt.shape)
+            addnoiseim = self.model(hrt, 2)
+            
+            addnoise = np.float32(addnoiseim.cpu().detach().numpy())
+            addnoise = np.squeeze(self.normalizerhr.after(addnoise))
+            lr = np.squeeze(self.normalizer.after(lr))
+            addnoise255 = np.squeeze(np.float32(normalize(addnoise, datamin, datamax, clip=True))) * 255
+            lr255 = np.float32(normalize(lr, datamin, datamax, clip=True)) * 255
+            imsave(self.testsave + name + '.tif', addnoise)
+            utility.savecolorim1(self.testsave + name + '-dfnoNorm.png', addnoise255 - lr255)
+            utility.savecolorim(self.testsave + name + '-C.png', addnoise)
+            HallAssess = mean_absolute_error(addnoise, lr)
+            resultlst.append(HallAssess)
+        result = np.mean(np.array(resultlst))
+        print(result)
 
     def prepare(self, *args):
         def _prepare(tensor):
@@ -204,22 +234,21 @@ class Trainer():
 
 
 if __name__ == '__main__':
-    task = 1  # 2  #
+    task = 2  # 1  #
     inputF = 1
-            
+    FMIRdatapath = ''
+    LQpath = ''
     if task == 1: # Assessment of SR results
         testset = 'CCPs'  # 'Microtubules'  # 'F-actin'  # 'ER'  #
-        srdatapath = ''
-        lrpath = ''
-        lrpath = '/mnt/home/user1/MCX/Medical/CSBDeep-master/DataSet/BioSR_WF_to_SIM/DL-SR-main/dataset/test/CCPs/LR/im1_LR.tif'
-        srdatapath = '/mnt/home/user1/MCX/Medical/CSBDeep-master/DataSet/BioSR_WF_to_SIM/DL-SR-main/dataset/test/CCPs/output_DFCAN-SISR/im1_LR.tif'
     elif task == 2: # Assessment of Denoising results
         condition = 1
         testset = 'Denoising_Planaria'  # 'Denoising_Tribolium'  #
-        denoisedatapath = ''
-        noisypath = ''
-        denoisedatapath = '/mnt/home/user1/MCX/Medical/CSBDeep-master/DataSet/Denoising_Planaria/test_data/SwinIRmto1/c1/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0001.tif'
-        noisypath = '/mnt/home/user1/MCX/Medical/CSBDeep-master/DataSet/Denoising_Planaria/test_data/condition_1/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0001.tif'
+        # 2D denoise
+        FMIRdatapath = '../exampledata/task2_Denoising_Planaria/C1/FMIR/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0011_D55_CARE.tif'  # '/mnt/home/user1/MCX/Medical/CSBDeep-master/DataSet/Denoising_Planaria/test_data/SwinIRmto1/c1/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0001.tif'
+        LQpath = '../exampledata/task2_Denoising_Planaria/C1/LQ/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0011_D55.tif'
+        # 3D denoise
+        # FMIRdatapath = './FMIR/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0001.tif'
+        # LQpath = './Denoising_Planaria/test_data/condition_1/EXP278_Smed_fixed_RedDot1_sub_5_N7_m0001.tif'
     
     savename = 'Degrad-%s/' % testset
     unimodel = model.DegModel(tsk=task, inchannel=inputF)
@@ -229,14 +258,14 @@ if __name__ == '__main__':
     _model = model.Model(args, unimodel, rp=rp)
     if task == 1:        
         loader_test = [dataloader.DataLoader(
-            Deg_SR(srpath=srdatapath, lrpath=lrpath),
+            Deg_SR(srpath=FMIRdatapath, lrpath=LQpath),
             batch_size=1,
             shuffle=False,
             pin_memory=not args.cpu,
             num_workers=0)]
     elif task == 2:        
         loader_test = [dataloader.DataLoader(
-            Deg_Flourescenedenoise(denoisepath=denoisedatapath, noisepath=noisypath),
+            Deg_Flourescenedenoise(denoisepath=FMIRdatapath, noisepath=LQpath),
             batch_size=1,
             shuffle=False,
             pin_memory=not args.cpu,
@@ -247,4 +276,4 @@ if __name__ == '__main__':
     if task == 1:
         t.test()
     elif task == 2:
-        t.test3Ddenoise(condition=condition, data_test=testset)
+        t.test2Ddenoise()
