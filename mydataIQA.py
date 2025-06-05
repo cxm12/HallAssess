@@ -46,7 +46,6 @@ def np2Tensor(*args):
     return [_np2Tensor(a) for a in args]
 
 
-
 class Deg_SR(data.Dataset):
     def __init__(self, srpath='', lrpath=''):
         self.dir_demo = srpath
@@ -54,14 +53,15 @@ class Deg_SR(data.Dataset):
         self.rgb_range = 1
 
     def __getitem__(self, idx):
-        if '.png' in self.dir_demoLR:
-            lr = cv2.cvtColor(np.squeeze(cv2.imread(self.dir_demoLR)), cv2.COLOR_BGR2GRAY)
-        else:
-            lr = tiff.imread(self.dir_demoLR)
         if '.png' in self.dir_demo:
             sr = cv2.cvtColor(np.squeeze(cv2.imread(self.dir_demo)), cv2.COLOR_BGR2GRAY)
         else:
             sr = tiff.imread(self.dir_demo)
+        if '.png' in self.dir_demoLR:
+            lr = cv2.cvtColor(np.squeeze(cv2.imread(self.dir_demoLR)), cv2.COLOR_BGR2GRAY)
+        else:
+            lr = tiff.imread(self.dir_demoLR)
+        
         h, w = lr.shape
         lr = lr[0:h//8*8, 0:w//8*8]
         lr = np.expand_dims(lr, -1)
@@ -81,6 +81,47 @@ class Deg_SR(data.Dataset):
         return 1
 
 
+import glob
+class Deg_SRFile(data.Dataset):
+    def __init__(self, srpath='', lrpath=''):
+        self.dir_demo = srpath
+        self.dir_demoLR = lrpath
+        self.rgb_range = 1
+        self.filenamesSR = sorted(glob.glob(srpath))
+        self.filenamesLR = sorted(glob.glob(lrpath))
+        print('Deg_SRFile: ', self.filenamesSR, '\n', self.filenamesLR)
+
+        self.list_sr, self.list_lr, self.nm = [], [], []
+        for fi in self.filenamesLR:
+            lr = tiff.imread(fi)
+            # print(np.max(lr[:,:,0]), np.max(lr[:,:,1]), np.max(lr[:,:,2]))
+            h, w, _ = lr.shape
+            self.nm.append(fi[len(lrpath[:-6]):])
+            self.list_lr.append(lr[0:h//8*8, 0:w//8*8, 1:2])
+            
+            sr = tiff.imread(self.filenamesSR[self.filenamesLR.index(fi)])
+            self.list_sr.append(np.float32(sr[:, :, 1:2]))
+            print('SR: h, w = ', sr.shape, sr.dtype, 'LR: h, w = ', lr.shape, lr.dtype)
+
+    def __getitem__(self, idx):
+        lr = self.list_lr[idx]
+        filename = self.nm[idx]
+        sr = self.list_sr[idx]
+        
+        srreshape = cv2.resize(sr, (lr.shape[0], lr.shape[1]), interpolation=cv2.INTER_CUBIC)
+        srreshape = np.expand_dims(srreshape, -1)
+        srreshape = normalize(srreshape, datamin, datamax, clip=True) * self.rgb_range
+        
+        lr = normalize(lr, datamin, datamax, clip=True) * self.rgb_range
+        pair = (lr, srreshape)
+                
+        pair_t = np2Tensor(*pair)
+        return pair_t[0], pair_t[1], filename
+
+    def __len__(self):
+        return len(self.list_sr)
+
+
 class Deg_Flourescenedenoise(data.Dataset):
     def __init__(self, denoisepath='', noisepath=''):     
         self.datamin, self.datamax = 0, 100
@@ -92,6 +133,13 @@ class Deg_Flourescenedenoise(data.Dataset):
         filename, fmt = os.path.splitext(os.path.basename(self.denoisepath))
         rgbN = np.float32(imread(self.noisepath))       
         rgbDe = np.float32(imread(self.denoisepath))
+        
+        rgbDe = np.squeeze(rgbDe)
+        rgbN = np.squeeze(rgbN)
+        if len(rgbDe.shape) == 2:
+            rgbDe = np.expand_dims(rgbDe, 0)
+        if len(rgbN.shape) == 2:
+            rgbN = np.expand_dims(rgbN, 0)
         
         rgbN = torch.from_numpy(np.ascontiguousarray(rgbN * self.rgb_range)).float()
         rgbDe = torch.from_numpy(np.ascontiguousarray(rgbDe * self.rgb_range)).float()
